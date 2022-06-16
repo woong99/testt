@@ -764,6 +764,32 @@
       보내기 전에 오랫동안 기다리게 해서 종단간의 지연을 증가시킬 수 있다. 빠른 재전송을 통해
       종단간의 지연을 단축시킬 수 있다.
     </p>
+    <h1>
+      4개의 측정된 SampleRTT값은 106msec, 120msec, 140msec, 90msec라고 가정하자. ɑ(알파)=0.1값과 이
+      네 샘플들의 첫 번째 값을 얻기 바로 전의 EstimatedRTT의 값을 100msec라고 가정하여, 각
+      SampleRTT의 값이 얻어질 때마다의 EstimatedRTT를 계산하라. 또한 β(베타)=0.25값과 이 네 샘플들의
+      첫 번째 값을 얻기 바로 전의 DevRTT의 값을 5msec라고 가정하여,각 샘플값을 얻을 때마다 DevRTT를
+      계산하라. 끝으로 각 샘플값을 얻을 때마다 TCP TimeoutInterval을 계산하라.
+    </h1>
+    <p>
+      a) SampleRTT 106이 얻어질 때 : EstimatedRTT = (0.9 * 100msec) + (0.1 * 106msec) = 90msec +
+      10.6msec = 100.6msec DevRTT = (1-0.25) * 5msec + 0.25 * |106msec-100msec| = 3.75msec + 1.5msec
+      = 5.25msec TimeoutInterval = 100.6msec + 4 * 5.25msec = 121.6msec b) SampleRTT 120이 얻어질 때
+      : EstimatedRTT = (0.9 * 100.6msec) + (0.1 * 120msec) = 90.54msec + 12msec = 102.54msec DevRTT
+      = (1-0.25) * 5.25msec + 0.25 * |120msec-100.6msec| = 3.9375msec + 4.85msec = 8.7875msec
+      TimeoutInterval = 102.54msec + 4 * 8.7875msec = 155.69msec c) SampleRTT 140이 얻어질 때 :
+      EstimatedRTT = (0.9 * 102.54msec) + (0.1 * 140msec) = 92.286msec + 14msec = 106.286msec DevRTT
+      = (1-0.25) * 8.7875msec + 0.25 * |140msec-102.54msec| = 6.590625msec + 9.365msec =
+      15.955625msec TimeoutInterval = 106.286msec + 4 * 15.955625msec = 170.1085msec d) SampleRTT
+      90이 얻어질 때 : EstimatedRTT = (0.9 * 106.286msec) + (0.1 * 90msec) = 95.6574msec + 9msec =
+      104.6574msec DevRTT = (1-0.25) * 15.955625msec + 0.25 * |140msec-102.54msec| = 11.96671875msec
+      + 4.0715msec = 16.03821875msec TimeoutInterval = 104.6574msec + 4 * 16.03821875msec =
+      168.810275msec
+    </p>
+    <h1>공식</h1>
+    <p>EstimatedRTT = (1 - a) * EstimatedRTT + a * SampleRTT</p>
+    <p>DevRTT = (1 - b) * DevRTT + b * |SampleRTT - EstimatedRTT|</p>
+    <p>TimeoutInterval = EstimatedRTT + 4 * DevRTT</p>
   </body>
 </html>
 `
